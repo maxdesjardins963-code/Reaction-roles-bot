@@ -103,14 +103,6 @@ async function handleReaction(reaction, user, add) {
     const member = await guild.members.fetch(user.id);
     if (add) await member.roles.add(role);
     else await member.roles.remove(role);
-
-    await user
-      .send(
-        add
-          ? `Got it! You'll now get the **${entry.label}** ping on ${guild.name} 🎉`
-          : `No worries, I removed the **${entry.label}** ping on ${guild.name} 👍`
-      )
-      .catch(() => {}); // DMs closed: ignore
   } catch (err) {
     console.error("Role error :", err.message);
   }
@@ -121,7 +113,7 @@ client.on("messageReactionRemove", (r, u) => handleReaction(r, u, false));
 
 // ───── Mini serveur web (Render Web Service) ─────
 http
-  .createServer((_, res) => res.end("Bot online"))
+  .createServer((_, res) => res.end("Bot is online 🚀"))
   .listen(process.env.PORT || 3000);
 
 client.login(process.env.TOKEN);
