@@ -7,6 +7,7 @@ const {
   EmbedBuilder,
   SlashCommandBuilder,
   PermissionFlagsBits,
+  MessageFlags,
 } = require("discord.js");
 
 // ───────────── CONFIG ─────────────
@@ -37,7 +38,7 @@ const setupCommand = new SlashCommandBuilder()
   .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
   .toJSON();
 
-client.once("ready", async () => {
+client.once("clientReady", async () => {
   console.log(`✅ Logged in as ${client.user.tag}`);
   for (const guild of client.guilds.cache.values()) {
     await guild.roles.fetch();
@@ -55,7 +56,7 @@ client.on("interactionCreate", async (interaction) => {
   if (missing.length) {
     return interaction.reply({
       content: `Oops, I can't find these roles: **${missing.join(", ")}**. Check the spelling then run /setup again 🙏`,
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     });
   }
 
@@ -70,7 +71,7 @@ client.on("interactionCreate", async (interaction) => {
     .setColor(0x4f9d9d)
     .setFooter({ text: FOOTER });
 
-  await interaction.reply({ content: "Posting it right now! ✨", ephemeral: true });
+  await interaction.reply({ content: "Posting it right now! ✨", flags: MessageFlags.Ephemeral });
   const msg = await interaction.channel.send({ embeds: [embed] });
   for (const r of ROLES) await msg.react(r.emoji);
 });
@@ -104,7 +105,7 @@ async function handleReaction(reaction, user, add) {
     if (add) await member.roles.add(role);
     else await member.roles.remove(role);
   } catch (err) {
-    console.error("Role error :", err.message);
+    console.error("Role error:", err.message);
   }
 }
 
